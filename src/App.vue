@@ -1,42 +1,44 @@
 <template>
-  <ul>
-    <div class="scaleTable  flex--center" >
-      <div class="note flex--center" v-for="(note, i) in MAJOR" :key="i"
-        :class="note ? '--white' : '--black'">{{ NOTE_TO_NAME[i] }}</div>
-    </div>
-    <li v-for="(scale, i) of scales" :key="i">
-      <div class="scaleOpts">
-        <select v-model="scale.tonic">
-          <option v-for="(noteOffset, noteName) in NOTE" :key="noteOffset"
-            :value="noteName">{{ noteName }}</option>
-        </select>
-        <select v-model="scale.name">
-          <option v-for="(scaleOffset, name) in SCALE" :key="scaleOffset"
-            :value="name">{{ name }}</option>
-        </select>
+  <div class="App">
+    <ul>
+      <div class="scaleTable  flex--center" >
+        <div class="note flex--center" v-for="i in SCALE_NOTE" :key="i"
+          :class="MAJOR[i % 12] ? '--white' : '--black'">{{ NOTE_TO_NAME[i % 12] }}</div>
       </div>
-      <div class="scaleCtrls">
-        <button @click="upScale(scale, i)">↑</button>
-        <button @click="downScale(scale, i)">↓</button>
-        <button @click="deleteScale(scale, i)">×</button>
-      </div>
-      
-      <div class="scaleTable flex--center">
-        <div class="note  flex--center" v-for="note in SCALE_NOTE" :key="note"
-            :style="getStyle(scale, note)">
-          {{ NOTE_TO_NAME[(note) % 12] }}
+      <li v-for="(scale, i) of scales" :key="i">
+        <div class="scaleOpts">
+          <select v-model="scale.tonic">
+            <option v-for="(noteOffset, noteName) in NOTE" :key="noteOffset"
+              :value="noteName">{{ noteName }}</option>
+          </select>
+          <select v-model="scale.name">
+            <option v-for="(scaleOffset, name) in SCALE" :key="scaleOffset"
+              :value="name">{{ name }}</option>
+          </select>
         </div>
-      </div>
+        <div class="scaleCtrls">
+          <button @click="upScale(scale, i)">↑</button>
+          <button @click="downScale(scale, i)">↓</button>
+          <button @click="deleteScale(scale, i)">×</button>
+        </div>
 
-    </li>
-  </ul>
-  <button class="addScale" @click="addScale(name)">add scale</button>
+        <div class="scaleTable">
+          <div class="note" v-for="note in SCALE_NOTE" :key="note"
+              :class="getClass(scale, note)">
+            {{ NOTE_TO_NAME[(note) % 12] }}
+          </div>
+        </div>
+
+      </li>
+    </ul>
+    <button class="addScale" @click="addScale(name)">add scale</button>
+  </div>
 </template>
 
 <script>
 // import Scale from './components/Scale.vue';
 
-import { SCALE, NOTE, NOTE_TO_NAME, NOTE_TO_COLOR, MAJOR } from './const';
+import { SCALE, NOTE, NOTE_TO_NAME, /*NOTE_TO_COLOR, */MAJOR } from './const';
 
 export default {
   data () { return {
@@ -44,13 +46,13 @@ export default {
       NOTE,
       NOTE_TO_NAME,
       MAJOR,
-      SCALE_NOTE:  new Array(12).fill(0).map((v, i) => i),
+      SCALE_NOTE:  new Array(24).fill(0).map((v, i) => i),
 
       scales: [],
   }},
 
   methods: {
-    getStyle (scale, note) {
+    getClass (scale, note) {
       const { tonic } = scale;
       const tonicNote = NOTE[tonic];
       const nextNote = circleOctave(note - tonicNote);
@@ -58,14 +60,9 @@ export default {
       const scaleOffset = SCALE[scale.name];
       const noteScaleOffset = circleOctave(nextNote + scaleOffset);
 
-      const isTonic = note === tonicNote;
+      // const isTonic = note % 12 === tonicNote;
       const isColorNote = MAJOR[noteScaleOffset];
-      return {
-        backgroundColor: isColorNote ? NOTE_TO_COLOR[nextNote] : 'white',
-        fontWeight: isTonic ? 'bold' : '',
-        color: isTonic ? 'white' : '',
-        fontSize: isTonic ? '16px' : '',
-      };
+      return isColorNote && `note--${ nextNote }`;
     },
 
     upScale (scale, i) {
@@ -92,7 +89,7 @@ export default {
 
   mounted () {
     // this.addScale();
-    for (let i = 0; i < 4; i++)
+    for (let i = 0; i < 2; i++)
       this.addScale({
         tonic: randFromObj(NOTE, true),
         name: randFromObj(SCALE, true),
@@ -173,9 +170,17 @@ li:hover .scaleCtrls { opacity: 1; }
 .note {
   width: 32px;
   height: 32px;
-  box-shadow: 0 0 0 1px grey;
-  font-size: 12px;
+  /*box-shadow: 0 0 0 1px grey;*/
+  border: 1px solid #8080808c;
+  font-size: 10px;
+  padding: 0px 2px;
+  box-sizing: border-box;
+  text-align: left;
+  display: inline-block;
+  vertical-align: bottom;
+  border-right-width: 0;
 }
+.note:last-child { border-right-width: 1px; }
 .note.--black {
   background: black;
   color: white;
@@ -191,8 +196,30 @@ body {
   text-align: center;
   color: #2c3e50;
   /*padding: 24px;*/
-  width: 375px;
+  /*width: 375px;*/
 }
+
+.App {
+  display: inline-block;
+}
+
+.note--0 {
+  background-color: #ff0000;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+}
+.note--1 { background-color: #ff4e00; }
+.note--2 { background-color: #db7b00; }
+.note--3 { background-color: #ffcc01; }
+.note--4 { background-color: #e4ed00; }
+.note--5 { background-color: #80d700; }
+.note--6 { background-color: #01ffb4; }
+.note--7 { background-color: #01ffea; }
+.note--8 { background-color: #00baff; }
+.note--9 { background-color: #9777ff; }
+.note--10 { background-color: #ba36ff; }
+.note--11 { background-color: #ff00fd; }
 
 .--tonic { background: red; }
 
