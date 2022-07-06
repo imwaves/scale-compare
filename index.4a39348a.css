@@ -1,0 +1,25 @@
+@font-face {
+  font-weight: 500;
+  font-family: Gordita;
+  font-style: normal;
+  src: local(Gordita Medium), local(Gordita-Medium), url("Gordita-Medium.3e429431.woff2") format("woff2"), url("Gordita-Medium.63ba3352.woff") format("woff");
+  font-display: swap;
+}
+
+@font-face {
+  font-weight: bold;
+  font-family: Gordita;
+  font-style: normal;
+  src: local(Gordita Bold), local(Gordita-Bold), url("Gordita-Bold.452515ef.woff2") format("woff2"), url("Gordita-Bold.3f231ff5.woff") format("woff");
+  font-display: swap;
+}
+
+@font-face {
+  font-weight: normal;
+  font-family: Gordita;
+  font-style: normal;
+  src: local(Gordita Regular), local(Gordita-Regular), url("Gordita-Regular.93b53428.woff2") format("woff2"), url("Gordita-Regular.18743ccf.woff") format("woff");
+  font-display: swap;
+}
+
+/*# sourceMappingURL=index.4a39348a.css.map */
